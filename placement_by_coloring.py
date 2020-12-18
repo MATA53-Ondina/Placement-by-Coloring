@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
 # Global
-colorVertices = []
+N = 11
+colorVertices = [x for x in range(N)]
 gama = [(2, 0), (4, 1), (2, 2), (5, 3), (6, 4), (1, 5), (5, 6), (3, 7)] # tuples: (popularidade, file)
 
 
 class Graph:
- 
-    # Constructor
     def __init__(self, edges, N):
  
         self.adj = [[] for _ in range(N)]
         self.arq = [[] for _ in range(N)]
  
-        # add edges to the undirected graph
         for (src, dest) in edges:
             self.adj[src].append(dest)
             self.adj[dest].append(src)
  
  
 def OrdenaVerticesDescrescente(G):
+    global N
     A = []
     K = []
-    for u in G:
-        A.append((len(u.adj), u))
+    i = 0
+    for u in G.adj:
+        A.append((len(u), i))
+        i += 1
     sorted(A, reverse = True)
     for (_,v) in A:
         K.append(v)
@@ -34,9 +35,8 @@ def OrdenaArquivos(gama):
     return gama
 
 
-
 def GreedyColoring(graph, K):
-    global colorVertices
+    global colorVertices, N
     result = {}
  
     for u in K:
@@ -49,10 +49,10 @@ def GreedyColoring(graph, K):
                 color = color + 1
         result[u] = color
 
-    for j in range(len(K)):
+    for j in range(N):
         colorVertices[j] = 0
 
-    for v in range(len(K)):
+    for v in range(N):
         colorVertices[v] = colors[result[v]]
 
 
@@ -63,23 +63,22 @@ def LargestFirst(graph):
 
 
 def PlacementByColoring(graph, gama):
-    global colorVertices
+    global colorVertices, N
     lambd = 50
     teta = 0
 
     LargestFirst(graph) # O(|V|+|E|)
     delta = OrdenaArquivos(gama)
-    for v in graph: # O(|V|*50)
+    for v in range(N): # O(|V|*50)
         for i in range(lambd):
             teta = colorVertices[v]
-            v.arq = delta[(teta * lambd) + i]
+            v.arq.append(delta[(teta * lambd) + i])
 
 
 if __name__ == '__main__':
     colors = [-1, 0, 1, 2, 3]
 
     edges = [(0, 1), (0, 4), (0, 5), (4, 5), (1, 4), (1, 3), (2, 3), (2, 4)]
-    N = 6
     graph = Graph(edges, N)
  
     PlacementByColoring(graph, gama)
