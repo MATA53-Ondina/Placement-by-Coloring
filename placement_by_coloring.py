@@ -82,4 +82,4 @@ if __name__ == '__main__':
     N = 6
     graph = Graph(edges, N)
  
-    LargestFirst(graph)
+    PlacementByColoring(graph, gama)
